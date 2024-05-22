@@ -1,10 +1,9 @@
 import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
-import { ProductModel } from "./products.model";
 
 const createProducts = async (req: Request, res: Response) => {
-    const productsData = req.body;
     try {
+        const productsData = req.body;
         const result = await ProductServices.cteateProduct(productsData)
 
         res.status(200).json({
@@ -17,32 +16,23 @@ const createProducts = async (req: Request, res: Response) => {
     }
 }
 const getAllProducts = async (req: Request, res: Response) => {
-    // const productsData = req.body;
-    const products = await ProductServices.getAllProduct()
-
-    if (!products || products.length === 0) {
-        return res.status(404).json({
-            success: false,
-            message: 'No products found!',
-            data: []
-        });
-    }
     try {
-
+        const searchTerm = req.query.searchTerm as string;
+        const products = await ProductServices.getAllProduct(searchTerm ?? "");
         res.status(200).json({
             success: true,
-            message: "Products fetched successfully!!",
+            message: "Products matching  fetched successfully!",
             data: products
         })
     } catch (error: any) {
-        console.error('Error fetching products:', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to fetch products!',
+            message: 'Failed to search products!',
             error: error.message
         });
     }
 }
+
 
 const getSingleProduct = async (req: Request, res: Response) => {
     try {
@@ -96,39 +86,11 @@ const deleteProduct = async (req: Request, res: Response) => {
     })
 }
 
-
-const productFindWithParams = async (req: Request, res: Response) => {
-    try {
-        const searchTerm = req.query.searchTerm;
-        const products = await ProductServices.productFindWithParam({
-            $or: [
-                { name: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search by product name
-                { description: { $regex: searchTerm, $options: 'i' } } // Case-insensitive search by product description
-            ]
-        });
-        res.status(200).json({
-            success: true,
-            message: "Products matching search term 'iphone' fetched successfully!",
-            data: products
-        })
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: 'Failed to search products!',
-            error: error.message
-        });
-    }
-}
-
-
-
-
 export const ProductsController = {
     createProducts,
     getAllProducts,
     getSingleProduct,
     updateProduct,
     deleteProduct,
-    productFindWithParams
 
 }

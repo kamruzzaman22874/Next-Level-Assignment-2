@@ -9,7 +9,6 @@ export type Tinventory = {
     inStock: boolean;
 }
 
-
 export type Tproducts = {
     id: string;
     name: string;
@@ -19,6 +18,5 @@ export type Tproducts = {
     tags: string[];
     variants: Tvariants[];
     inventory: Tinventory;
-
 }
 

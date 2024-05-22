@@ -5,10 +5,29 @@ const cteateProduct = async (payload: Tproducts) => {
     const result = await ProductModel.create(payload)
     return result
 }
-const getAllProduct = async () => {
-    const result = await ProductModel.find()
-    return result
+
+
+const getAllProduct = async (searchTerm: string) => {
+    let query;
+    if (searchTerm) {
+        query = await ProductModel.find({
+            $or: [
+                { name: { $regex: searchTerm, $options: 'i' } },
+                { description: { $regex: searchTerm, $options: 'i' } }
+            ]
+        })
+
+    } else {
+
+        const result = await ProductModel.find()
+        return result
+    }
+    return query;
 }
+
+
+
+
 const getSingleProduct = async (productId: string) => {
     const result = await ProductModel.findById(productId)
     return result
@@ -23,10 +42,7 @@ const deleteProduct = async (productId: string) => {
     return deletedProduct;
 }
 
-const productFindWithParam = async (req: Request, res: Response) => {
-    const products = await ProductModel.find();
-    return products;
-}
+
 
 export const ProductServices = {
     cteateProduct,
@@ -34,5 +50,4 @@ export const ProductServices = {
     getSingleProduct,
     updateProduct,
     deleteProduct,
-    productFindWithParam
 }
