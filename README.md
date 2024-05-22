@@ -32,8 +32,7 @@ To clone and install this project locally, follow these steps:
 1. **Clone the repository:**
 
    ```bash
-   git clonehttps://github.com/mahamudulhasan-me/apollo-assignment-2.git
-   cd apollo-assignment-2
+   git https://github.com/kamruzzaman22874/Next-Level-Assignment-2
    ```
 
 2. **Install dependencies:**
