@@ -1,4 +1,6 @@
 
+// create interface 
+
 export type Tvariants = {
     type: string;
     value: string;
@@ -10,7 +12,7 @@ export type Tinventory = {
 }
 
 export type Tproducts = {
-    id: string;
+    id?: string;
     name: string;
     description: string;
     price: number;

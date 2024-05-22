@@ -1,6 +1,4 @@
-
-
-
+// create interface 
 export type TOrder = {
     email: string;
     productId: string;

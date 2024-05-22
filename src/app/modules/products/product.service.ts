@@ -1,12 +1,15 @@
 import { Tproducts } from "./products.interface";
 import { ProductModel } from "./products.model";
 
+
+// create product using post method 
+
 const cteateProduct = async (payload: Tproducts) => {
     const result = await ProductModel.create(payload)
     return result
 }
 
-
+//get all product using get method 
 const getAllProduct = async (searchTerm: string) => {
     let query;
     if (searchTerm) {
@@ -26,16 +29,21 @@ const getAllProduct = async (searchTerm: string) => {
 }
 
 
-
+// get single product using params method 
 
 const getSingleProduct = async (productId: string) => {
     const result = await ProductModel.findById(productId)
     return result
 }
-const updateProduct = async (productId: string, updateProduct: any) => {
-    const result = await ProductModel.findByIdAndUpdate(productId, updateProduct, { new: true })
+
+// update product using put method 
+
+const updateProduct = async (productId: string, updatedProduct: any) => {
+    const result = await ProductModel.findByIdAndUpdate(productId, updatedProduct, { new: true })
     return result
 }
+
+// delete product using delete method 
 
 const deleteProduct = async (productId: string) => {
     const deletedProduct = await ProductModel.findByIdAndDelete(productId);

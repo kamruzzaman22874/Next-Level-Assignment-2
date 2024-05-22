@@ -2,6 +2,9 @@ import { Request, Response } from "express"
 import { OrderService } from "./order.service";
 import { ProductModel } from "../products/products.model";
 
+// create order data using post method 
+
+
 const createOrder = async (req: Request, res: Response) => {
     try {
         const orderData = req.body;
@@ -44,10 +47,10 @@ const createOrder = async (req: Request, res: Response) => {
             message: 'Order created successfully',
             data: result
         });
-    } catch (error: any) {
+    } catch (error) {
         res.status(500).json({
             success: false,
-            message: `${error.message} | something went wrong`
+            message: "Order not created"
         });
     }
 };
@@ -65,7 +68,7 @@ const getAllOrders = async (req: Request, res: Response) => {
             message: "Orders fetched successfully!",
             data: order
         })
-    } catch (error: any) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             massage: "Order not found"

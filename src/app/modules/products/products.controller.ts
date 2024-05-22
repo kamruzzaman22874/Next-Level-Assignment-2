@@ -1,10 +1,21 @@
 import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
+import { z } from "zod";
+import { productsValidaitionSchema } from "./products.validation";
+
+// create product 
 
 const createProducts = async (req: Request, res: Response) => {
     try {
+
         const productsData = req.body;
-        const result = await ProductServices.cteateProduct(productsData)
+        // data validation using zod 
+
+        const zodparseData = productsValidaitionSchema.parse(productsData)
+        console.log(zodparseData)
+
+        const result = await ProductServices.cteateProduct(zodparseData)
+        console.log(result)
 
         res.status(200).json({
             success: true,
@@ -12,9 +23,16 @@ const createProducts = async (req: Request, res: Response) => {
             data: result
         })
     } catch (error) {
-        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Failed to Create products!',
+        });
     }
 }
+
+// get all product and implemet search params 
+
+
 const getAllProducts = async (req: Request, res: Response) => {
     try {
         const searchTerm = req.query.searchTerm as string;
@@ -24,14 +42,15 @@ const getAllProducts = async (req: Request, res: Response) => {
             message: "Products matching  fetched successfully!",
             data: products
         })
-    } catch (error: any) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: 'Failed to search products!',
-            error: error.message
         });
     }
 }
+
+// single product using param id 
 
 
 const getSingleProduct = async (req: Request, res: Response) => {
@@ -43,32 +62,36 @@ const getSingleProduct = async (req: Request, res: Response) => {
             message: 'Product fetched successfully',
             data: product
         });
-    } catch (error: any) {
+    } catch (error) {
         return res.status(500).json({
             success: false,
             message: 'Something went wrong',
-            error: error.message
         });
     }
 }
-const updateProduct = async (req: Request, res: Response) => {
+// update product using put method 
+
+
+const updateProducts = async (req: Request, res: Response) => {
     try {
         const productId = req.params.productId;
-        const updatedProduct = req.body;
+        const updatedProduct: string = req.body;
         const product = await ProductServices.updateProduct(productId, updatedProduct);
         return res.status(200).json({
             success: true,
             message: 'Product updated successfully!',
             data: product
         });
-    } catch (error: any) {
+    } catch (error) {
         return res.status(500).json({
             success: false,
             message: 'Something went wrong',
-            error: error.message
         });
     }
 }
+
+
+// delete product using delete method 
 
 const deleteProduct = async (req: Request, res: Response) => {
     const productId = req.params.productId;
@@ -90,7 +113,7 @@ export const ProductsController = {
     createProducts,
     getAllProducts,
     getSingleProduct,
-    updateProduct,
+    updateProducts,
     deleteProduct,
 
 }

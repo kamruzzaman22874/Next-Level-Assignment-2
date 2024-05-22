@@ -1,24 +1,19 @@
-import { Schema, model } from "mongoose";
-import { Tinventory, Tproducts, Tvariants } from "./products.interface";
-
-
-// make schema
-
-const VariantsSchema = new Schema<Tvariants>({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductModel = void 0;
+const mongoose_1 = require("mongoose");
+const VariantsSchema = new mongoose_1.Schema({
     type: {
         type: String,
         required: true,
     },
     value: { type: String, required: true }
-
-})
-
-const InventorySchema = new Schema<Tinventory>({
+});
+const InventorySchema = new mongoose_1.Schema({
     quantity: { type: Number, required: true },
     inStock: { type: Boolean, required: true }
-})
-
-const productsSchema = new Schema<Tproducts>({
+});
+const productsSchema = new mongoose_1.Schema({
     id: { type: String },
     name: { type: String, required: true },
     description: { type: String, required: true },
@@ -27,8 +22,5 @@ const productsSchema = new Schema<Tproducts>({
     tags: { type: [String], required: true },
     variants: { type: [VariantsSchema], required: true },
     inventory: { type: InventorySchema, required: true },
-
-})
-
-// make model 
-export const ProductModel = model<Tproducts>("Products", productsSchema)
+});
+exports.ProductModel = (0, mongoose_1.model)("Products", productsSchema);
