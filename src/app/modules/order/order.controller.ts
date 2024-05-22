@@ -23,8 +23,8 @@ const createOrder = async (req: Request, res: Response) => {
         // Check if product is out of stock
         if (product.inventory.quantity === 0) {
             return res.status(500).json({
-                success: false,
-                message: 'Product is out of stock'
+                "success": false,
+                "message": "Insufficient quantity available in inventory"
             });
         }
 
@@ -68,7 +68,7 @@ const getAllOrders = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            massage: `${error.message} | something went wrong`
+            massage: "Order not found"
         })
     }
 }
