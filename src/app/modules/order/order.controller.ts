@@ -4,69 +4,105 @@ import { ProductModel } from "../products/products.model";
 import { OrderModel } from "./order.model";
 
 
+// const createOrder = async (req: Request, res: Response) => {
+//     try {
+//         const orderData = req.body;
+//         const result = await OrderService.createOrders(orderData);
+//         console.log(result)
+//         const { productId, quantity } = req.body;
+
+//         const product = await ProductModel.findById({ _id: productId });
+//         console.log('product', product)
+
+//         if (product.inventory.quantity = 0) {
+//             res.status(500).json({
+//                 success: false,
+//                 message: "Product already stock out",
+//             })
+//         }
+//         if (product) {
+//             product.inventory.quantity -= quantity
+
+//             if (product.inventory.quantity <= 0) {
+//                 product.inventory.quantity = 0;
+//                 product.inventory.inStock = false;
+//             }
+
+
+//             await product.save();
+
+//         } else {
+//             throw new Error('Product not found!')
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Order created successfully",
+//             data: result
+//         })
+
+
+//     } catch (error: any) {
+//         res.status(500).json({
+//             success: false,
+//             massage: `${error.message} | something went wrong`
+//         })
+//     }
+// }
+
+
 const createOrder = async (req: Request, res: Response) => {
     try {
-        const { productId, quantity } = req.body;
-        console.log(productId, quantity);
+        const orderData = req.body;
 
-        // if (!productId || !quantity) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: 'Please provide productId and quantity!',
-        //         data: null
-        //     });
-        // }
+        // Create the order
+        const result = await OrderService.createOrders(orderData);
 
+        // Get product details
+        const { productId, quantity } = orderData;
         const product = await ProductModel.findById(productId);
-        console.log(product)
 
-        // if (!product) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         message: 'Product not found!',
-        //         data: null
-        //     });
-        // }
-
-        if (product.inventory.quantity < quantity) {
-            return res.status(400).json({
+        if (!product) {
+            return res.status(404).json({
                 success: false,
-                message: 'Insufficient stock!',
-                data: null
+                message: 'Product not found!'
             });
         }
 
-        // Decrement the product quantity 
+        // Check if product is out of stock
+        if (product.inventory.quantity === 0) {
+            return res.status(500).json({
+                success: false,
+                message: 'Product is out of stock'
+            });
+        }
 
+        // Update inventory quantity and inStock status
         product.inventory.quantity -= quantity;
-        product.inventory.inStock = product.inventory.quantity > 0;
 
-        // const updateProduct = await ProductModel.findByIdAndUpdate(
-        //     productId, product,
-        //     { new: true }
-        // )
+        if (product.inventory.quantity <= 0) {
+            product.inventory.quantity = 0;
+            product.inventory.inStock = false;
+        }
 
-        const newOrder = new OrderModel({
-            productId,
-            quantity
-        });
+        // Save product changes
+        await product.save();
 
-        await newOrder.save();
-
-        // const orderData = req.body;
-        // const result = await OrderService.createOrders(orderData);
         res.status(200).json({
             success: true,
-            message: "Order created successfully!",
-            data: newOrder
-        })
+            message: 'Order created successfully',
+            data: result
+        });
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            massage: `${error.message} | something went wrong`
-        })
+            message: `${error.message} | something went wrong`
+        });
     }
-}
+};
+
+export default createOrder;
+
 
 const getAllOrders = async (req: Request, res: Response) => {
     try {
