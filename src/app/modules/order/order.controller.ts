@@ -1,55 +1,6 @@
 import { Request, Response } from "express"
 import { OrderService } from "./order.service";
 import { ProductModel } from "../products/products.model";
-import { OrderModel } from "./order.model";
-
-
-// const createOrder = async (req: Request, res: Response) => {
-//     try {
-//         const orderData = req.body;
-//         const result = await OrderService.createOrders(orderData);
-//         console.log(result)
-//         const { productId, quantity } = req.body;
-
-//         const product = await ProductModel.findById({ _id: productId });
-//         console.log('product', product)
-
-//         if (product.inventory.quantity = 0) {
-//             res.status(500).json({
-//                 success: false,
-//                 message: "Product already stock out",
-//             })
-//         }
-//         if (product) {
-//             product.inventory.quantity -= quantity
-
-//             if (product.inventory.quantity <= 0) {
-//                 product.inventory.quantity = 0;
-//                 product.inventory.inStock = false;
-//             }
-
-
-//             await product.save();
-
-//         } else {
-//             throw new Error('Product not found!')
-//         }
-
-//         res.status(200).json({
-//             success: true,
-//             message: "Order created successfully",
-//             data: result
-//         })
-
-
-//     } catch (error: any) {
-//         res.status(500).json({
-//             success: false,
-//             massage: `${error.message} | something went wrong`
-//         })
-//     }
-// }
-
 
 const createOrder = async (req: Request, res: Response) => {
     try {
