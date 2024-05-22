@@ -17,6 +17,13 @@ app.get('/', (req: Request, res: Response) => {
 
     res.send("Hello world !!!!")
 })
+
+app.get("*", (req: Request, res: Response) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found!",
+    });
+});
 // console.log(process.cwd())
 
 export default app

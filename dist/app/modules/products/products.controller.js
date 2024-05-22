@@ -11,10 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsController = void 0;
 const product_service_1 = require("./product.service");
+const products_validation_1 = require("./products.validation");
+// create product 
 const createProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productsData = req.body;
-        const result = yield product_service_1.ProductServices.cteateProduct(productsData);
+        // data validation using zod 
+        const zodparseData = products_validation_1.productsValidaitionSchema.parse(productsData);
+        console.log(zodparseData);
+        const result = yield product_service_1.ProductServices.cteateProduct(zodparseData);
+        console.log(result);
         res.status(200).json({
             success: true,
             message: "Product created successfully!",
@@ -24,10 +30,11 @@ const createProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Failed to search products!',
+            message: 'Failed to Create products!',
         });
     }
 });
+// get all product and implemet search params 
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const searchTerm = req.query.searchTerm;
@@ -45,6 +52,7 @@ const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 });
+// single product using param id 
 const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productId } = req.params;
@@ -62,6 +70,7 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
 });
+// update product using put method 
 const updateProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productId = req.params.productId;
@@ -80,6 +89,7 @@ const updateProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 });
+// delete product using delete method 
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const productId = req.params.productId;
     const deletedProduct = yield product_service_1.ProductServices.deleteProduct(productId);

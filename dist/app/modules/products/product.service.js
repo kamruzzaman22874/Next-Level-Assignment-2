@@ -11,10 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductServices = void 0;
 const products_model_1 = require("./products.model");
+// create product using post method 
 const cteateProduct = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield products_model_1.ProductModel.create(payload);
     return result;
 });
+//get all product using get method 
 const getAllProduct = (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
     let query;
     if (searchTerm) {
@@ -31,14 +33,17 @@ const getAllProduct = (searchTerm) => __awaiter(void 0, void 0, void 0, function
     }
     return query;
 });
+// get single product using params method 
 const getSingleProduct = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield products_model_1.ProductModel.findById(productId);
     return result;
 });
+// update product using put method 
 const updateProduct = (productId, updatedProduct) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield products_model_1.ProductModel.findByIdAndUpdate(productId, updatedProduct, { new: true });
     return result;
 });
+// delete product using delete method 
 const deleteProduct = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     const deletedProduct = yield products_model_1.ProductModel.findByIdAndDelete(productId);
     return deletedProduct;

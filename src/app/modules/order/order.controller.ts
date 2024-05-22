@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { OrderService } from "./order.service";
 import { ProductModel } from "../products/products.model";
+import ZodOrderValidationSchema from "./order.validation";
 
 // create order data using post method 
 
@@ -8,9 +9,10 @@ import { ProductModel } from "../products/products.model";
 const createOrder = async (req: Request, res: Response) => {
     try {
         const orderData = req.body;
+        const validator = ZodOrderValidationSchema.parse(orderData)
 
         // Create the order
-        const result = await OrderService.createOrders(orderData);
+        const result = await OrderService.createOrders(validator.productId);
 
         // Get product details
         const { productId, quantity } = orderData;

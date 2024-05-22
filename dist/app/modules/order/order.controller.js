@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 const order_service_1 = require("./order.service");
 const products_model_1 = require("../products/products.model");
+// create order data using post method 
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const orderData = req.body;
@@ -50,7 +51,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({
             success: false,
-            message: "Order not found"
+            message: "Order not created"
         });
     }
 });

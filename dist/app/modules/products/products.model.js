@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductModel = void 0;
 const mongoose_1 = require("mongoose");
+// make schema
 const VariantsSchema = new mongoose_1.Schema({
     type: {
         type: String,
@@ -23,4 +24,5 @@ const productsSchema = new mongoose_1.Schema({
     variants: { type: [VariantsSchema], required: true },
     inventory: { type: InventorySchema, required: true },
 });
+// make model 
 exports.ProductModel = (0, mongoose_1.model)("Products", productsSchema);
