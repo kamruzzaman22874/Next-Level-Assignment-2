@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { OrderService } from "./order.service";
 import { ProductModel } from "../products/products.model";
 import ZodOrderValidationSchema from "./order.validation";
+import { OrderModel } from "./order.model";
 
 // create order data using post method 
 
@@ -9,50 +10,52 @@ import ZodOrderValidationSchema from "./order.validation";
 const createOrder = async (req: Request, res: Response) => {
     try {
         const orderData = req.body;
-        const validator = ZodOrderValidationSchema.parse(orderData)
+        const validOrder = ZodOrderValidationSchema.parse(orderData);
+        console.log(validOrder)
 
-        // Create the order
-        const result = await OrderService.createOrders(validator.productId);
-
-        // Get product details
-        const { productId, quantity } = orderData;
-        const product = await ProductModel.findById(productId);
-
+        // Check if the product exists and is in stock
+        const product = await ProductModel.findById(validOrder.productId);
+        console.log(product)
         if (!product) {
             return res.status(404).json({
                 success: false,
-                message: 'Product not found!'
+                message: "Product not found!",
+            });
+        }
+        if (
+            !product.inventory.inStock ||
+            validOrder.quantity > product.inventory.quantity
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Insufficient quantity available in inventory",
             });
         }
 
-        // Check if product is out of stock
-        if (product.inventory.quantity === 0) {
-            return res.status(500).json({
-                "success": false,
-                "message": "Insufficient quantity available in inventory"
-            });
+        // Update the product quantity
+        if (product) {
+            product.inventory.quantity -= orderData.quantity;
+            if (product.inventory.quantity <= 0) {
+                product.inventory.quantity = 0;
+                product.inventory.inStock = false;
+            }
+            await product.save();
+        } else {
+            throw new Error('Product not found');
         }
+        // Create the order
+        const createdOrder = await OrderService.createOrders(validOrder);
 
-        // Update inventory quantity and inStock status
-        product.inventory.quantity -= quantity;
-
-        if (product.inventory.quantity <= 0) {
-            product.inventory.quantity = 0;
-            product.inventory.inStock = false;
-        }
-
-        // Save product changes
-        await product.save();
-
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
-            message: 'Order created successfully',
-            data: result
+            message: "Order created successfully!",
+            data: createdOrder,
         });
-    } catch (error) {
-        res.status(500).json({
+    } catch (error: unknown) {
+        return res.status(500).json({
             success: false,
-            message: "Order not created"
+            message: "Something went wrong!",
+            error: error,
         });
     }
 };
@@ -62,14 +65,21 @@ const getAllOrders = async (req: Request, res: Response) => {
     try {
         const email = req.query.email;
         const order = await OrderService.getAllOrders(email as string);
-
-        res.status(200).json({
-            success: true,
-            message: "Orders fetched successfully!",
-            data: order
-        })
-    } catch (error) {
-        res.status(500).json({
+        if (order.length) {
+            return res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully!",
+                data: order
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            })
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
             success: false,
             massage: "Order not found"
         })

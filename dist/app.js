@@ -13,9 +13,15 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 // middleware 
 app.use("/api/products", products_route_1.ProductsRoute);
-app.use("/api/order", order_route_1.OrderRouter);
+app.use("/api/orders", order_route_1.OrderRouter);
 app.get('/', (req, res) => {
     res.send("Hello world !!!!");
+});
+app.get("*", (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found!",
+    });
 });
 // console.log(process.cwd())
 exports.default = app;

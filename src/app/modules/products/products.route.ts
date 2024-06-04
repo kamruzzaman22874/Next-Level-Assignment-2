@@ -8,7 +8,7 @@ const router = express.Router();
 
 // create route 
 
-router.post("/create-product", ProductsController.createProducts)
+router.post("/", ProductsController.createProducts)
 router.get("/", ProductsController.getAllProducts)
 router.get("/:productId", ProductsController.getSingleProduct)
 router.put("/:productId", ProductsController.updateProducts)

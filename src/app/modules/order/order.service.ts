@@ -1,8 +1,9 @@
+import { TOrder } from "./order.interface";
 import { OrderModel } from "./order.model"
 
 // create orders using post method 
 
-const createOrders = async (payload: string) => {
+const createOrders = async (payload: TOrder) => {
     const result = await OrderModel.create(payload);
     return result;
 }

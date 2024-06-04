@@ -11,10 +11,9 @@ app.use(cors())
 // middleware 
 
 app.use("/api/products", ProductsRoute)
-app.use("/api/order", OrderRouter)
+app.use("/api/orders", OrderRouter)
 
 app.get('/', (req: Request, res: Response) => {
-
     res.send("Hello world !!!!")
 })
 
